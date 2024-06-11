@@ -12,6 +12,7 @@
             <li><a href="./clients.php">Manage Clients</a></li>
             <li><a href="./products.php">Manage Products</a></li>
             <li><a href="./invoices.php">Manage Invoices</a></li>
+            <li><a href="../logout.php">Encerrar</a></li>
         </ul>
     </nav>
 </body>
