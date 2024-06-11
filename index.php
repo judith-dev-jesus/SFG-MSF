@@ -1,3 +1,39 @@
+<?php
+// Carregar a configuração do banco de dados
+require_once 'config/database.php';
+
+// Iniciar a sessão
+session_start();
+
+// Verificar se o formulário de login foi enviado
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['Nome'];
+    $password = $_POST['Senha'];
+    $role = $_POST['niveis'];
+
+    // Consulta para verificar as credenciais do usuário
+    $sql = "SELECT * FROM loginn WHERE Nome='$username' AND Senha='$password' AND niveis='$role'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        // Usuário encontrado, definir variáveis de sessão
+        $_SESSION['Nome'] = $username;
+        $_SESSION['niveis'] = $role;
+
+        // Redirecionar com base no papel do usuário
+        if ($role == 'Director geral') {
+            header("Location:views/admin/dashboard.php");
+        } else if ($role == 'Secretaria' || $role == 'Contabilista') {
+            header('Location:views/user/dashboard.php');
+        }
+        exit;
+    } else {
+        $error = "Nome de usuário ou senha inválidos.";
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,7 +47,7 @@
 <body>
     <div class="main">
         <div class="main-section-left">
-            <form action="./database/config.php" method="POST">
+            <form action="./index.php" method="POST">
                 <h1>Entrar</h1>
                 <label for="Nome">
                     Nome
@@ -25,9 +61,9 @@
                     Seleciona o nível de acesso
                     <select name="niveis" id="niveis" required>
                         <option disabled selected value>Click aqui para selecionar</option>
-                        <option value="Direitor_geral" name="niveis">Director geral</option>
-                        <option value="Assistente_contabilidade" name="niveis">Contabilista</option>
-                        <option value="Secretaria_executiva" name="niveis">Secretaria(o)</option>
+                        <option value="Director geral" name="niveis">Director geral</option>
+                        <option value="Contabilidade" name="niveis">Contabilista</option>
+                        <option value="Secretaria" name="niveis">Secretaria(o)</option>
                     </select>
                 </label>
                 <button>Enviar</button>
